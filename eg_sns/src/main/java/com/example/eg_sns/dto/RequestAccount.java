@@ -46,6 +46,6 @@ public class RequestAccount extends DtoBase {
 	@Size(max = 65535, message = "自己紹介は最大65535文字です。")
 	private String iconUri;
 	
-	
+	private String profileFileHidden; 
 }
 

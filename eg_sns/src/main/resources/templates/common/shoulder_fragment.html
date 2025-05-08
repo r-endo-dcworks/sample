@@ -107,14 +107,17 @@
 		<ul class="sidebar-nav" id="sidebar-nav">
 
 			<li class="nav-item">
-				<a class="nav-link collapsed" href="/home/">
+				<a class="nav-link"
+				    th:classappend="${page == 'home'} ? 'active' : 'collapsed'"
+				    th:href="@{/home/}">
 					<i class="bi bi-house-door"></i>
 					<span>HOME</span>
 				</a>
 			</li><!-- End Dashboard Nav -->
 
 			<li class="nav-item">
-				<a class="nav-link collapsed" 
+				<a class="nav-link" 
+				th:classappend="${page == 'profile'} ? 'active' : 'collapsed'"
 				th:href="@{/profile/{loginId}(loginId=${loginUser.loginId})}">
 
 					<i class="bi bi-person"></i>
@@ -123,7 +126,8 @@
 			</li><!-- End Profile Page Nav -->
 
 			<li class="nav-item">
-				<a class="nav-link collapsed" href="/friend/">
+				<a class="nav-link" href="/friend/"
+				 th:classappend="${page == 'friend'} ? 'active' : 'collapsed'">
 					<i class="bi bi-people"></i>
 					<span>フレンド</span>
 				</a>

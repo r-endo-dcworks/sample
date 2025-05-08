@@ -63,6 +63,7 @@ public class ProfileController {
 		List<Posts> postsList = postsService.findPostsByUserId(users.getId());
 		model.addAttribute("posts", postsList);
 
+		model.addAttribute("page", "profile");
 		return "profile/index";
 	}
 
@@ -70,6 +71,9 @@ public class ProfileController {
 	public String index(@ModelAttribute RequestAccount requestAccount, HttpSession session) {
 
 		Users currentUser = (Users) session.getAttribute("users");
+		if (requestAccount.getIconUri() == null || requestAccount.getIconUri().isEmpty()) {
+		    requestAccount.setIconUri(requestAccount.getProfileFileHidden());
+		}
 		usersService.update(requestAccount);
 
 		currentUser.setName(requestAccount.getName());

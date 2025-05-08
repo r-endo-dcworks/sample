@@ -29,7 +29,7 @@
 										<th scope="col"></th>
 										<th scope="col">名前</th>
 										<th scope="col">プロフィール</th>
-										<th scope="col">承認ステータス</th>
+										<th scope="col"></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -49,12 +49,11 @@
 											<div th:switch="${friendStatusMap[users.id]}">
 
 												<div th:case="1">
-													<button class="btn btn-success rounded-pill" disabled>フレンド</button>
-													<form th:action="@{/friend/cancel}" method="post"
+													<form th:action="@{/friend/delete}" method="post"
 														style="display:inline;">
 														<input type="hidden" name="friendId" th:value="${users.id}">
 														<button type="submit"
-															class="btn btn-link rounded-pill">フレンド解除</button>
+															class="btn btn-success rounded-pill">フレンド解除</button>
 													</form>
 												</div>
 
@@ -74,20 +73,24 @@
 														</form>
 													</div>
 													<div th:if="${friendDirectionMap[users.id]} == 'sent'">
-														<button class="btn btn-secondary rounded-pill"
-															disabled>申請済み</button>
+														<form th:action="@{/friend/delete}" method="post"
+															style="display:inline;">
+															<input type="hidden" name="friendId" th:value="${users.id}">
+															<button type="submit"
+																class="btn btn-secondary rounded-pill">申請をやめる</button>
+														</form>
 													</div>
+
 												</div>
 
 												<div th:case="9">
 													<div th:if="${friendDirectionMap[users.id]} == 'received'">
-														<button class="btn btn-warning rounded-pill"
-															disabled>却下</button>
+
 														<form th:action="@{/friend/cancel}" method="post"
 															style="display:inline;">
 															<input type="hidden" name="friendId" th:value="${users.id}">
 															<button type="submit"
-																class="btn btn-link rounded-pill">却下を取り消す</button>
+																class="btn btn-warning rounded-pill">ブロック解除</button>
 														</form>
 													</div>
 													<div th:if="${friendDirectionMap[users.id]} == 'sent'">

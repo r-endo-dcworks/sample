@@ -64,6 +64,7 @@ public class FriendController {
 		model.addAttribute("usersList", allUsers);
 		model.addAttribute("friendStatusMap", friendStatusMap);
 		model.addAttribute("friendDirectionMap", friendDirectionMap);
+		model.addAttribute("page", "friend");
 		return "friend/list";
 	}
 
@@ -99,7 +100,7 @@ public class FriendController {
 	}
 	
 	/**
-	 * フレンド解除処理
+	 * フレンド却下取り消し処理
 	 * @return　profile画面
 	 */
 	@PostMapping("/cancel")
@@ -110,6 +111,21 @@ public class FriendController {
 		// フレンド却下のロジック
 		System.out.println("フレンド解除を行います。");
 		friendsService.cancelFriend(friendId, loginUser.getId());
+
+		return "redirect:/friend";
+	}
+	/**
+	 * フレンド却下取り消し処理
+	 * @return　profile画面
+	 */
+	@PostMapping("/delete")
+	public String deleteFriend(@RequestParam("friendId") Long friendId,
+			HttpSession session) {
+		Users loginUser = (Users) session.getAttribute("users");
+
+		// フレンド却下のロジック
+		System.out.println("フレンド解除を行います。");
+		friendsService.deleteFriend(friendId, loginUser.getId());
 
 		return "redirect:/friend";
 	}

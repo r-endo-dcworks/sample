@@ -62,9 +62,8 @@ public class HomeController {
 				System.out.println(" → コメントなし");
 			}
 		}
-
-	
 		model.addAttribute("posts", postsList);
+		model.addAttribute("page", "home");
 		return "home/index";
 	}
 

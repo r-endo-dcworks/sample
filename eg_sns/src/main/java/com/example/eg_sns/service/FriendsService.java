@@ -69,7 +69,7 @@ public class FriendsService {
 		}
 	}
 	/**
-	 * 友達解除処理を行う。
+	 * 却下取り消し処理を行う。
 	 */
 	public void cancelFriend(Long loginUserId, Long requesterId) {
 		Optional<Friends> friendOpt = friendsRepository.findByUsersIdAndFriendId(loginUserId,requesterId);
@@ -78,7 +78,21 @@ public class FriendsService {
 		    Friends friend = friendOpt.get();
 			friend.setFriendStatus(0); // 0 = 承認待ち
 			friendsRepository.save(friend);
-			System.out.println("フレンドを解除しました。");
+			System.out.println("フレンド却下を取り消しました。");
 		}
+	}
+	/**
+	 * 却下取り消し処理を行う。
+	 */
+	public void deleteFriend(Long loginUserId, Long requesterId) {
+		  Friends friend = friendsRepository.findByUsersIdAndFriendId(loginUserId, requesterId)
+			        .orElseGet(() -> friendsRepository.findByUsersIdAndFriendId(requesterId, loginUserId).orElse(null));
+		  
+		  if (friend != null) {
+			  friendsRepository.delete(friend);
+		        System.out.println("フレンド関係を解除しました。");
+		    } else {
+		        System.out.println("該当するフレンド関係が見つかりませんでした。");
+		    }
 	}
 }
