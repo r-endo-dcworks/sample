@@ -17,12 +17,14 @@
 <h3>・HOME画面</h3>
 投稿者の名前を押すと、投稿者のプロフィールリンクに遷移する。
 <br>
+最新の投稿を上から全て表示する<br>
 <img width="500" alt="HOME画面" src="https://github.com/user-attachments/assets/a164131a-2a24-4757-a7bd-2e66a504812d" />
 
 <h3>・HOMEコメント画面</h3>
 エラーメッセージが表示される<br>
 コメント投稿者の名前を押すと、投稿者のプロフィールリンクに遷移する。
 <br>
+最新のコメントを上から表示する<br>
 <img width="500" alt="HOMEコメント画面" src="https://github.com/user-attachments/assets/074eab3a-eff7-4cf7-9d07-3b9dc61e0066" />
 
 <h3>・投稿画面</h3>
