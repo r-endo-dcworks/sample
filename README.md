@@ -44,5 +44,5 @@
 <h3>・フレンド管理画面</h3>
 ステータスによって表示が変化<br>
 「プロフィールを見る」はプロフィール画面に遷移する<br>
-<img width="500" alt="フレンド管理画面" src="https://github.com/user-attachments/assets/36522efc-a41d-4b3c-8c71-33690f882bf7" />
+<img width="500" alt="フレンド画面new" src="https://github.com/user-attachments/assets/4dbfd8ad-2aba-4b07-b328-367cba783c2f" />
 
