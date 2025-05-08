@@ -39,6 +39,7 @@
 友達申請が可能<br>
 申請後、ステータスによって表示が変化
 <br>
+投稿・コメント欄・フレンドリストの名前部分から遷移できる<br>
 <img width="500" alt="プロフィール画面（フレンド用）" src="https://github.com/user-attachments/assets/fbc8dde4-db91-4592-a141-097bf367cdb8" />
 
 <h3>・フレンド管理画面</h3>
@@ -47,5 +48,6 @@
 「申請をやめる」「フレンド解除」でDBからフレンド情報が削除される<br>
 「承認」「却下」は申請を受け取った場合のみ表示<br>
 「ブロック解除」は「承認・却下」ボタンに戻る<br>
+名前部分から、各プロフィール画面に遷移できる<br>
 <img width="500" alt="フレンド画面new" src="https://github.com/user-attachments/assets/4dbfd8ad-2aba-4b07-b328-367cba783c2f" />
 
