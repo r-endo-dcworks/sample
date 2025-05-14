@@ -39,6 +39,27 @@ public class PostsService {
 	public List<Posts> findAllPosts() {
 		return (List<Posts>) repository.findByOrderByIdDesc();
 	}
+	
+	
+	/**
+	 * トピック最新5件取得する。
+	 *
+	 * @return トピックを５件取得する。
+	 */
+	public List<Posts> findLatestPosts() {
+	    return repository.findTop5ByOrderByIdDesc();
+	}
+
+	/**
+	 * トピックさらに取得する。
+	 *
+	 * @return トピックをさらに取得する。
+	 */
+	public List<Posts> findNextPosts(Long sinceId) {
+	    return repository.findTop5ByIdLessThanOrderByIdDesc(sinceId);
+	}
+	
+	/**
 
 	/**
 	 * トピック検索を行う。
@@ -49,7 +70,7 @@ public class PostsService {
 	// PostsService.java
 	public List<Posts> findPostsByUserId(Long userId) {
 		log.info("ユーザーの投稿一覧を取得します。：userId={}", userId);
-		return repository.findByUsersId(userId);
+		return repository.findTop5ByUsersIdOrderByIdDesc(userId);
 	}
 
 

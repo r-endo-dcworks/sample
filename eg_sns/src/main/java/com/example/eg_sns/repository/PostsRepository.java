@@ -41,13 +41,28 @@ public interface PostsRepository extends PagingAndSortingRepository<Posts, Long>
 	 */
 	List<Posts> findByOrderByIdDesc();
 	
+	/**
+	 * トピック一覧を取得する。
+	 * トピックIDの降順。
+	 * @return トピック5件を返す。
+	 */
+	List<Posts> findTop5ByOrderByIdDesc();
 	
+	/**
+	 * トピック一覧を取得する。
+	 * トピックIDの降順。
+	 * @return トピック追加で5件を返す。
+	 */
+	List<Posts> findTop5ByIdLessThanOrderByIdDesc(Long id);
 	
 	/**
 	 * トピック検索を行う。
 	 * トピックID、ユーザーIDを指定する。
 	 * @return ユーザーのトピック一覧を返す。
 	 */
-	List<Posts> findByUsersId(Long usersId);
+	List<Posts> findTop5ByUsersIdOrderByIdDesc(Long usersId);
+	
+	
+
 
 }

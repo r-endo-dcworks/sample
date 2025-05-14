@@ -48,9 +48,8 @@ public class HomeController {
 				", 名前=" + users.getName());
 
 		model.addAttribute("users", users);
-		List<Posts> postsList = postsService.findAllPosts(); //投稿一覧取得
+			List<Posts> postsList = postsService.findLatestPosts();//投稿５件取得
 		
-		System.out.println("投稿一覧を取得しました。投稿件数: " + postsList.size());
 		for (Posts post : postsList) {
 			System.out.println("投稿タイトル: " + post.getTitle());
 
@@ -62,7 +61,11 @@ public class HomeController {
 				System.out.println(" → コメントなし");
 			}
 		}
+	
 		model.addAttribute("posts", postsList);
+		Long sinceId = postsList.isEmpty() ? 0L : postsList.get(postsList.size() - 1).getId();
+		model.addAttribute("sinceId", sinceId);
+
 		model.addAttribute("page", "home");
 		return "home/index";
 	}

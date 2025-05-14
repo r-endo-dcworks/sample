@@ -23,7 +23,7 @@
 					<div class="row">
 						<div class="col-lg-12">
 							<!-- Card with an image on top -->
-							
+
 							<div th:each="posts : ${posts}">
 								<div class="card">
 									<div class="d-flex align-items-center bg-success bg-opacity-10 p-2 ">
@@ -31,8 +31,9 @@
 											class="rounded-circle"
 											style="width: 40px; height: 40px; object-fit: cover;">
 										<h6 class="ms-2 mb-0">
-										<a th:href="@{/profile/{loginId}(loginId=${posts.users.loginId})}" th:text="${posts.users.name}"
-										 class="fw-bold text-blue text-decoration-none">ユーザー名</a>
+											<a th:href="@{/profile/{loginId}(loginId=${posts.users.loginId})}"
+												th:text="${posts.users.name}"
+												class="fw-bold text-blue text-decoration-none">ユーザー名</a>
 										</h6>
 									</div>
 
@@ -43,8 +44,9 @@
 									</div>
 
 									<div class="card-body">
-										<h5 class="card-title" th:text="${posts.title}"></h5>
-										<p class="card-text" th:text="${posts.body}"></p>
+										<h5 class="card-title" th:text="${posts.title}">投稿タイトル</h5>
+										<span th:utext="${@stringUtil.nl2br(posts.body)}" class="mb-3 d-block">本文</span>
+
 										<div class="card-body">
 											<!--コメント送信欄-->
 											<form class="row g-3 needs-validation" novalidate
@@ -69,14 +71,16 @@
 											<div class="news">
 												<div class="post-item clearfix">
 													<div th:each="postComments : ${posts.postCommentsList}">
-														
+
 														<div class="d-flex align-items-center mb-2">
 															<div th:if="${postComments.comment != null}">
 																<img th:src="@{'/assets/img/' + ${postComments.users.iconUri}}"
-																	class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
+																	class="rounded-circle"
+																	style="width: 50px; height: 50px; object-fit: cover;">
 																<h4>
-																	<a th:href="@{/profile/{loginId}(loginId=${postComments.users.loginId})}" th:text="${postComments.users.name}"
-																											 class="ms-2 mb-0">ユーザー名</a>
+																	<a th:href="@{/profile/{loginId}(loginId=${postComments.users.loginId})}"
+																		th:text="${postComments.users.name}"
+																		class="ms-2 mb-0">ユーザー名</a>
 																</h4>
 																<p th:text="${postComments.comment}">コメント内容</p>
 															</div>
@@ -89,6 +93,41 @@
 									</div>
 								</div>
 							</div>
+
+							<div id="posts-container"></div>
+
+							<!--もっと見るボタン-->
+							<div id="btn-more-section" class="text-center mb-3 d-block">
+								<button id="btn-more" class="btn btn-primary" type="button" onclick="callWebAPI();"
+									th:data-sinceid="${sinceId}">さらに表示</button>
+							</div>
+
+							<!--JSで取得した投稿-->
+							<template id="template-posts">
+								<!--ユーザー情報表示-->
+								<div class="card mt-3">
+									<div class="d-flex align-items-center bg-success bg-opacity-10 p-2">
+										<img class="user-icon rounded-circle" alt="Profile"
+											style="width: 40px; height: 40px; object-fit: cover;">
+										<h6 class="ms-2 mb-0">
+											<a class="user-name fw-bold text-blue text-decoration-none">ユーザー名</a>
+										</h6>
+									</div>
+									<div class="post-images mb-2"></div>
+									<div class="card-body">
+										<h5 class="card-title posts-title">投稿タイトル</h5>
+										<span class="posts-body mb-3 d-block">本文</span>
+										<div class="card-body comment-form-area"></div>
+
+										<div class="card-body">
+										
+													<div class="post-comments"></div>
+										
+										</div>
+									</div>
+								</div>
+							</template>
+
 						</div>
 					</div>
 				</div><!-- End Left side columns -->
@@ -97,7 +136,7 @@
 				<div class="col-lg-4">
 					<div class="card">
 						<div class="card-body">
-							<h5 class="card-title">今の気持ちをシェアしよう！</h5>
+							<h5 class="card-title">今の気持ちをシェアしよう！！</h5>
 
 							<!-- Vertical Form -->
 							<form class="row g-3 needs-validation" th:action="@{/home/share}" method="post" novalidate>
@@ -116,7 +155,6 @@
 									<textarea name="body" class="form-control" style="height: 100px" th:text="${body}"
 										required></textarea>
 									<div class="invalid-feedback">本文を入力してください。</div>
-
 								</div>
 
 								<div class="col-12">
@@ -178,7 +216,10 @@
 
 	<!-- ======= Footer ======= -->
 	<div th:replace="~{common/shoulder_fragment::footer}"></div>
-
+	<script>
+		console.log("HTMLの中のスクリプトは実行されています");
+	</script>
+	<script src="/assets/js/home.js"></script>
 </body>
 
 </html>
