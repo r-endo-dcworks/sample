@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+</head>
+
+<body>
+
+
+
+
+
+	<div class="nav-item dropdown pe-3 ms-auto">
+		<a class="icon show" href="#" data-bs-toggle="dropdown" th:if="${loginUser.loginId != users.loginId}">
+			<i class="bi bi-three-dots"></i>
+		</a>
+		<ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+			<li>
+				<form th:action="@{/profile/rejected}" method="post" style="display:inline;">
+					<input type="hidden" name="friendId" th:value="${users.id}">
+					<button type="submit" class="dropdown-item">ブロックする</button>
+				</form>
+			</li>
+			
+
+			<li th:if="${friendDirectionMap[users.id]} == 'received'">
+				<hr class="dropdown-divider">
+			</li>
+			<li th:if="${friendDirectionMap[users.id]} == 'received'">
+				<form th:action="@{/profile/rejected}" method="post" style="display:inline;">
+					<input type="hidden" name="friendId" th:value="${users.id}">
+					<button type="submit" class="dropdown-item">ブロックする</button>
+				</form>
+			</li>
+			</div>
+
+
+
+		</ul>
+	</div>
+
+
+
+
+
+</body>
+
+</html>

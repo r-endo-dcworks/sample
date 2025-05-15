@@ -18,6 +18,7 @@ import com.example.eg_sns.dto.RequestPosts;
 import com.example.eg_sns.entity.PostComments;
 import com.example.eg_sns.entity.Posts;
 import com.example.eg_sns.entity.Users;
+import com.example.eg_sns.service.CommentsService;
 import com.example.eg_sns.service.PostsService;
 import com.example.eg_sns.service.UsersService;
 
@@ -33,7 +34,8 @@ public class HomeController {
 	private UsersService usersService;
 	@Autowired
 	private PostsService postsService;  
-	
+	@Autowired
+	private CommentsService commentsService;  
 
 	@GetMapping(path = { "", "/" })
 	public String index(HttpSession session, Model model, 
@@ -123,7 +125,7 @@ public class HomeController {
 		System.out.println("コメント処理を開始します。");
 		System.out.println("comment = " + comment);
 		Users user = (Users) session.getAttribute("users");
-		postsService.saveComment(postId, user.getId(), comment);	
+		commentsService.saveComment(postId, user.getId(), comment);	
 	
 
 	System.out.println("コメントが保存されました。");

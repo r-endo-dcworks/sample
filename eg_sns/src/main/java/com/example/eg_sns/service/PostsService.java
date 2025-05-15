@@ -3,14 +3,16 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.example.eg_sns.core.AppNotFoundException;
 import com.example.eg_sns.dto.RequestPosts;
 import com.example.eg_sns.entity.PostComments;
 import com.example.eg_sns.entity.PostImages;
 import com.example.eg_sns.entity.Posts;
-import com.example.eg_sns.repository.PostCommentsRepository;
 import com.example.eg_sns.repository.PostImagesRepository;
 import com.example.eg_sns.repository.PostsRepository;
+import com.example.eg_sns.util.CollectionUtil;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -28,8 +30,9 @@ public class PostsService {
 	private PostsRepository repository;
 	@Autowired
 	private PostImagesRepository postImagesRepository; 
+	/** コメント関連サービスクラス。 */
 	@Autowired
-	private PostCommentsRepository postCommentsRepository; 
+	private CommentsService commentsService;
 
 	/**
 	 * トピック全件取得する。
@@ -60,7 +63,34 @@ public class PostsService {
 	}
 	
 	/**
+	 * トピックの削除処理を行う。
+	 *
+	 * @param topicsId トピックID
+	 * @param usersId ユーザーID
+	 */
+	@Transactional
+	public void deletePosts(Long postsId, Long usersId) {
+		log.info("トピックを削除します。：postsId={}, usersId={}", postsId, usersId);
 
+		// 対象のトピックを検索。
+		Posts posts = repository.findByIdAndUsersId(postsId, usersId).orElse(null);
+		if (posts == null) {
+			// データが取得できない場合は不正操作の為エラー。（404エラーとする。）
+			throw new AppNotFoundException();
+		}
+
+		// トピックにぶら下がってるコメントを削除。
+		 List<PostComments> commentsList = posts.getPostCommentsList();
+		    if (CollectionUtil.isNotEmpty(commentsList)) {
+		        commentsService.deleteAll(commentsList);  // コメント削除
+		    }
+
+		// トピックを削除。
+		repository.delete(posts);
+		log.info("トピックの削除が完了しました");
+	}
+
+	
 	/**
 	 * トピック検索を行う。
 	 * トピックIDと、ログインIDを指定し、トピックを検索する。
@@ -103,20 +133,5 @@ public class PostsService {
 		}
 	}
 	
-	/**
-	 * コメント投稿処理を行う。
-	 *
-	 * @param requestShare コメント投稿DTO
-	 * @param usersId ユーザーID
-	 * @param postImagesUri 投稿画像URI
-	 * @return リダイレクト先（home画面）
-	 */
-	public void saveComment(Long postsId, Long usersId, String commentText) {
-		log.info("コメント保存処理を行います。：requestPosts={}, usersId={}",usersId);
-			PostComments comment = new PostComments();
-			comment.setPostsId(postsId);
-			comment.setUsersId(usersId);
-			comment.setComment(commentText);
-			postCommentsRepository.save(comment); 
-	}
+
 }

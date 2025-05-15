@@ -87,6 +87,23 @@ COMMENT = '投稿コメント';
 
 
 -- -----------------------------------------------------
+-- Table `eg_sns`.`post_goods`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `eg_sns`.`post_goods` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `posts_id` BIGINT NOT NULL COMMENT '投稿ID',
+  `users_id` BIGINT NOT NULL COMMENT 'ユーザーID',
+  `created` DATETIME NOT NULL COMMENT '作成日時',
+  `updated` DATETIME NOT NULL COMMENT '更新日時',
+  PRIMARY KEY (`id`),
+  UNIQUE (posts_id, users_id),
+  INDEX `fk_post_goods_posts1_idx` (`posts_id` ASC) VISIBLE,
+  INDEX `fk_post_goods_users1_idx` (`users_id` ASC) VISIBLE)
+ENGINE = InnoDB
+COMMENT = 'いいねボタン';
+
+
+-- -----------------------------------------------------
 -- Table `eg_sns`.`post_images`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `eg_sns`.`post_images` (

@@ -68,21 +68,29 @@ public class FriendsService {
 			System.out.println("フレンド申請を却下しました。");
 		}
 	}
+	
 	/**
-	 * 却下取り消し処理を行う。
+	 * 友達関係をブロック（存在すれば更新、なければ新規作成）
 	 */
-	public void cancelFriend(Long loginUserId, Long requesterId) {
-		Optional<Friends> friendOpt = friendsRepository.findByUsersIdAndFriendId(loginUserId,requesterId);
+	public void blockFriend(Long usersId, Long targetUserId) {
+	    Friends friend = friendsRepository.findByUsersIdAndFriendId(usersId, targetUserId)
+	        .or(() -> friendsRepository.findByUsersIdAndFriendId(targetUserId, usersId))
+	        .orElseGet(() -> {
+	            Friends newFriend = new Friends();
+	            newFriend.setUsersId(targetUserId);
+	            newFriend.setFriendId(usersId);
+	            return newFriend;
+	        });
 
-		if (friendOpt.isPresent()) {
-		    Friends friend = friendOpt.get();
-			friend.setFriendStatus(0); // 0 = 承認待ち
-			friendsRepository.save(friend);
-			System.out.println("フレンド却下を取り消しました。");
-		}
+	    friend.setFriendStatus(10); // 10 = ブロック
+	    friendsRepository.save(friend);
+
+	    System.out.println("友達関係をブロックしました。");
 	}
+
+	
 	/**
-	 * 却下取り消し処理を行う。
+	 * フレンド取り消し処理を行う。
 	 */
 	public void deleteFriend(Long loginUserId, Long requesterId) {
 		  Friends friend = friendsRepository.findByUsersIdAndFriendId(loginUserId, requesterId)
@@ -95,4 +103,6 @@ public class FriendsService {
 		        System.out.println("該当するフレンド関係が見つかりませんでした。");
 		    }
 	}
+	
+	
 }

@@ -9,24 +9,22 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+
 
 /**
  * 投稿画像Entityクラス。
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "post_comments")
+@Table(name = "post_goods",
+uniqueConstraints = @UniqueConstraint(columnNames = {"posts_id", "users_id"}))
 
-public class PostComments extends EntityBase {
-
-
-	
+public class PostGoods {
 	/** ID */
 	@Id
 	@Column(name = "id")
@@ -40,10 +38,7 @@ public class PostComments extends EntityBase {
 	/** ユーザーID */
 	@Column(name = "users_id", nullable = false)
 	private Long usersId;
-
-	/** コメント本文 */
-	@Column(name = "comment", nullable = false)
-	private String comment;
+	
 	
 	/** ユーザー情報の紐づけ */
 	@ManyToOne(fetch = FetchType.LAZY)

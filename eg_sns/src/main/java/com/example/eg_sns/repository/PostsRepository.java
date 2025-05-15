@@ -61,8 +61,6 @@ public interface PostsRepository extends PagingAndSortingRepository<Posts, Long>
 	 * @return ユーザーのトピック一覧を返す。
 	 */
 	List<Posts> findTop5ByUsersIdOrderByIdDesc(Long usersId);
-	
-	
 
 
 }

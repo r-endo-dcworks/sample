@@ -110,12 +110,12 @@ public class FriendController {
 
 		// フレンド却下のロジック
 		System.out.println("フレンド解除を行います。");
-		friendsService.cancelFriend(friendId, loginUser.getId());
+		friendsService.deleteFriend(friendId, loginUser.getId());
 
 		return "redirect:/friend";
 	}
 	/**
-	 * フレンド却下取り消し処理
+	 * フレンド解除処理
 	 * @return　profile画面
 	 */
 	@PostMapping("/delete")

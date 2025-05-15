@@ -99,6 +99,22 @@
 													</div>
 												</div>
 
+												<div th:case="10">
+													<div th:if="${friendDirectionMap[users.id]} == 'sent'">
+
+														<form th:action="@{/friend/cancel}" method="post"
+															style="display:inline;">
+															<input type="hidden" name="friendId" th:value="${users.id}">
+															<button type="submit"
+																class="btn btn-warning rounded-pill">ブロック解除</button>
+														</form>
+													</div>
+													<div th:if="${friendDirectionMap[users.id]} == 'received'">
+														<button class="btn btn-secondary rounded-pill"
+															disabled>却下されました</button>
+													</div>
+												</div>
+
 												<div th:case="*">
 													<a th:href="@{/profile/{loginId}(loginId=${users.loginId})}"
 														class="btn btn-info rounded-pill">プロフィールを見る</a>
