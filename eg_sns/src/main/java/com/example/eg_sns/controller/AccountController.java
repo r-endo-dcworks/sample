@@ -36,7 +36,7 @@ public class AccountController {
 		return "redirect:/account/complete";
 	}
 
-	@GetMapping("/complete") //completeにGETリクエストが来たらこのメソッドを返す
+	@GetMapping("/complete") 
 	public String complete() {
 		return "account/complete";
 	}

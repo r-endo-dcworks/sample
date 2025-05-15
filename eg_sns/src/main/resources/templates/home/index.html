@@ -35,6 +35,13 @@
 												th:text="${posts.users.name}"
 												class="fw-bold text-blue text-decoration-none">ユーザー名</a>
 										</h6>
+
+										<div class="nav-item d-flex align-items-center pe-3 ms-auto">
+											<a href="#" class="like-button icon show me-1">
+												<i class="bi bi-heart" style="font-size: 1.5rem;"></i>
+											</a>
+											<p class="mb-0 like-count">0</p>
+										</div>
 									</div>
 
 									<div th:each="postImages : ${posts.postImagesList}">
@@ -71,7 +78,6 @@
 											<div class="news">
 												<div class="post-item clearfix">
 													<div th:each="postComments : ${posts.postCommentsList}">
-
 														<div class="d-flex align-items-center mb-2">
 															<div th:if="${postComments.comment != null}">
 																<img th:src="@{'/assets/img/' + ${postComments.users.iconUri}}"
@@ -112,8 +118,14 @@
 										<h6 class="ms-2 mb-0">
 											<a class="user-name fw-bold text-blue text-decoration-none">ユーザー名</a>
 										</h6>
-										
+										<div class="nav-item d-flex align-items-center pe-3 ms-auto">
+											<a href="#" class="like-button icon show me-1">
+												<i class="bi bi-heart" style="font-size: 1.5rem;"></i>
+											</a>
+											<p class="mb-0 like-count">0</p>
+										</div>
 									</div>
+									
 									<div class="post-images mb-2"></div>
 									<div class="card-body">
 										<h5 class="card-title posts-title">投稿タイトル</h5>
@@ -121,9 +133,7 @@
 										<div class="card-body comment-form-area"></div>
 
 										<div class="card-body">
-
 											<div class="post-comments"></div>
-
 										</div>
 									</div>
 								</div>
@@ -217,6 +227,10 @@
 
 	<!-- ======= Footer ======= -->
 	<div th:replace="~{common/shoulder_fragment::footer}"></div>
+	<script th:src="@{/assets/js/like.js}">
+		console.log("いいね機能のスクリプトは実行されています");
+	</script>
+
 	<script>
 		console.log("HTMLの中のスクリプトは実行されています");
 	</script>

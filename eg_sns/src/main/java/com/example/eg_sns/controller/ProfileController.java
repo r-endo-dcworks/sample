@@ -50,18 +50,9 @@ public class ProfileController {
 		model.addAttribute("loginUser", loginUser);
 		model.addAttribute("users", users);
 
-		//ステータスをビューに渡す
 		Optional<Friends> friendOpt = friendsService.findFriendshipStatus(loginUser.getId(), users.getId());
 		friendOpt.ifPresent(friend -> model.addAttribute("friendStatus", friend.getFriendStatus()));
-		if (friendOpt.isPresent()) {
-			Friends friend = friendOpt.get();
 
-			System.out.println("フレンド情報: ユーザーID = " + friend.getUsersId() +
-					", フレンドID = " + friend.getFriendId() +
-					", ステータス = " + friend.getFriendStatus());
-		} else {
-			System.out.println("関係は見つかりませんでした。");
-		}
 		List<Posts> postsList = postsService.findPostsByUserId(users.getId());
 		model.addAttribute("posts", postsList);
 
@@ -69,6 +60,11 @@ public class ProfileController {
 		return "profile/index";
 	}
 
+
+	/**
+	 * プロフィール更新処理
+	 * @return　profile画面
+	 */
 	@PostMapping("/index")
 	public String index(@ModelAttribute RequestAccount requestAccount, HttpSession session) {
 
@@ -89,6 +85,10 @@ public class ProfileController {
 		return "redirect:/profile/" + currentUser.getLoginId();
 	}
 
+	/**
+	 * パスワード更新処理
+	 * @return　profile画面
+	 */
 	@PostMapping("/change-password")
 	public String registPassword(
 			@Validated @ModelAttribute RequestModifyPassword requestModifyPassword,
@@ -98,7 +98,6 @@ public class ProfileController {
 
 		Users currentUser = (Users) session.getAttribute("users");
 		Users users = (Users) session.getAttribute("users");
-		System.out.println("パスワード変更処理を開始 ");
 
 		String currentPassword = requestModifyPassword.getCurrentPassword();
 		String newPassword = requestModifyPassword.getNewPassword();
@@ -120,8 +119,6 @@ public class ProfileController {
 		if (result.hasErrors()) {
 			return "profile/change-password";
 		}
-		System.out.println("再度入力した新しいのパスワードチェック完了");
-		System.out.println("パスワードチェック完了");
 
 		users.setPassword(newPassword);
 		usersService.updatePassword(users, newPassword);
@@ -142,13 +139,9 @@ public class ProfileController {
 	public String index(@RequestParam Long postId,
 			@RequestParam String comment,
 			HttpSession session) {
-		System.out.println("コメント処理を開始します。");
-		System.out.println("comment = " + comment);
-
+		
 		Users user = (Users) session.getAttribute("users");
 		commentsService.saveComment(postId, user.getId(), comment);
-
-		System.out.println("コメントが保存されました。");
 		return "redirect:/profile/" + user.getLoginId();
 	}
 
@@ -160,10 +153,7 @@ public class ProfileController {
 	public String applyFriend(@RequestParam("friendId") Long friendId, HttpSession session) {
 		Users loginUser = (Users) session.getAttribute("users");
 
-		// フレンド申請のロジック
-		System.out.println("フレンド申請を行います。");
 		friendsService.applyFriend(loginUser.getId(), friendId);
-
 		Users friendUser = usersService.findById(friendId);
 		return "redirect:/profile/" + friendUser.getLoginId();
 	}
@@ -173,36 +163,22 @@ public class ProfileController {
 	 * @return　profile画面
 	 */
 	@PostMapping("/rejected")
-	public String blockFriend(@RequestParam("friendId") Long friendId,
-			HttpSession session) {
+	public String blockFriend(@RequestParam("friendId") Long friendId,HttpSession session) {
 		Users loginUser = (Users) session.getAttribute("users");
-
-		// フレンド却下のロジック
-		System.out.println("フレンド却下を行います。");
 		friendsService.blockFriend(friendId, loginUser.getId());
-
 		Users friendUser = usersService.findById(friendId);
 		return "redirect:/profile/" + friendUser.getLoginId();
 	}
-
 	
-
 	/**
-	 * [GET]トピック削除アクション。
-	 *
+	 * トピック削除アクション。
 	 * @param topicsId トピックID
 	 */
 	@PostMapping("/delete")
 	public String deletePosts(@RequestParam Long postsId, HttpSession session) {
-		System.out.println("トピック削除処理のアクションが呼ばれました。：postsId={}" + postsId);
-		// ログインユーザー情報取得（※自分が投稿した投稿以外を削除しない為の制御。）
 		Users loginUser = (Users) session.getAttribute("users");
 		Long usersId = loginUser.getId();
-
-		// 投稿削除処理
 		postsService.deletePosts(postsId, usersId);
-
-		// ホーム画面へリダイレクト。
 		Users user = (Users) session.getAttribute("users");
 		return "redirect:/profile/" + user.getLoginId();
 	}

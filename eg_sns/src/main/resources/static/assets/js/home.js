@@ -175,13 +175,15 @@ function callWebAPI() {
 				});
 				// card-bodyに追加
 				cardBody.appendChild(form);
-
 				document.getElementById('posts-container').appendChild(clone)
 			}
+			
 		})
 		.catch(error => {
 			// エラーハンドリング
 			console.error('Error fetching data:', error);
 		});
+		
+		
 }
 

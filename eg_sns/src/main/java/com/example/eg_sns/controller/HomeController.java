@@ -15,16 +15,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.eg_sns.dto.RequestAccount;
 import com.example.eg_sns.dto.RequestPosts;
-import com.example.eg_sns.entity.PostComments;
 import com.example.eg_sns.entity.Posts;
 import com.example.eg_sns.entity.Users;
 import com.example.eg_sns.service.CommentsService;
 import com.example.eg_sns.service.PostsService;
 import com.example.eg_sns.service.UsersService;
 
-/**
- * ※TODO 適宜実装を入れてください。
- */
+
 
 @Controller
 @RequestMapping("/home")
@@ -33,38 +30,23 @@ public class HomeController {
 	@Autowired
 	private UsersService usersService;
 	@Autowired
-	private PostsService postsService;  
+	private PostsService postsService;
 	@Autowired
-	private CommentsService commentsService;  
+	private CommentsService commentsService;
 
 	@GetMapping(path = { "", "/" })
-	public String index(HttpSession session, Model model, 
+	public String index(HttpSession session, Model model,
 			@RequestParam(required = false) String imageUri,
 			String comment) {
 		Users loginUser = (Users) session.getAttribute("users");
 		model.addAttribute("loginUser", loginUser);
-		System.out.println("GET /home にアクセスされました");
-		Users users = (Users) session.getAttribute("users");
-		System.out.println("ユーザー情報: ID=" + users.getLoginId() +
-				", メール=" + users.getEmailAddress() +
-				", 名前=" + users.getName());
-
-		model.addAttribute("users", users);
-			List<Posts> postsList = postsService.findLatestPosts();//投稿５件取得
 		
-		for (Posts post : postsList) {
-			System.out.println("投稿タイトル: " + post.getTitle());
-
-			if (post.getPostCommentsList() != null && !post.getPostCommentsList().isEmpty()) {
-				for (PostComments pc : post.getPostCommentsList()) {
-					System.out.println(" → コメント: " + pc.getComment() + " / 投稿者ID: " + pc.getUsersId());
-				}
-			} else {
-				System.out.println(" → コメントなし");
-			}
-		}
-	
+		Users users = (Users) session.getAttribute("users");
+		model.addAttribute("users", users);
+		
+		List<Posts> postsList = postsService.findLatestPosts();//投稿５件取得
 		model.addAttribute("posts", postsList);
+		
 		Long sinceId = postsList.isEmpty() ? 0L : postsList.get(postsList.size() - 1).getId();
 		model.addAttribute("sinceId", sinceId);
 
@@ -102,7 +84,6 @@ public class HomeController {
 	@PostMapping("/share")
 	public String index(@ModelAttribute RequestPosts requestPosts, HttpSession session,
 			@RequestParam(required = false) String imageUri) {
-		System.out.println("投稿処理を開始します。");
 		Users user = (Users) session.getAttribute("users");
 		String postImagesUri = null;
 		System.out.println("ImageUri = " + imageUri);
@@ -110,25 +91,19 @@ public class HomeController {
 			postImagesUri = imageUri;
 		}
 		postsService.save(requestPosts, user.getId(), postImagesUri);
-		System.out.println("投稿が保存されました。");
 		return "redirect:/home";
 	}
-	
+
 	/**
 	 * コメント投稿処理
 	 * @return　home画面
 	 */
 	@PostMapping("/comment")
 	public String index(@RequestParam Long postId,
-            @RequestParam String comment,
-            HttpSession session) {
-		System.out.println("コメント処理を開始します。");
-		System.out.println("comment = " + comment);
+			@RequestParam String comment,
+			HttpSession session) {
 		Users user = (Users) session.getAttribute("users");
-		commentsService.saveComment(postId, user.getId(), comment);	
-	
-
-	System.out.println("コメントが保存されました。");
+		commentsService.saveComment(postId, user.getId(), comment);
 		return "redirect:/home";
 	}
 

@@ -46,18 +46,13 @@ public class FriendController {
 				if (friendOpt.isPresent()) {
 					Friends friend = friendOpt.get();
 					friendStatusMap.put(user.getId(), friend.getFriendStatus());
-					System.out.println("フレンド情報: ユーザーID = " + friend.getUsersId() +
-							", フレンドID = " + friend.getFriendId() +
-							", ステータス = " + friend.getFriendStatus());
 
 					if (friend.getUsersId().equals(loginUser.getId())) {
 						friendDirectionMap.put(user.getId(), "sent");
 					} else {
 						friendDirectionMap.put(user.getId(), "received");
 					}
-				} else {
-					System.out.println("関係は見つかりませんでした。ユーザーID = " + user.getId());
-				}
+				} 
 			}
 		}
 
@@ -75,11 +70,7 @@ public class FriendController {
 	@PostMapping("/approval")
 	public String approvalFriend(@RequestParam("friendId") Long friendId, HttpSession session) {
 		Users loginUser = (Users) session.getAttribute("users");
-
-		// フレンド承認のロジック
-		System.out.println("フレンド承認を行います。");
 		friendsService.approvalFriend(friendId, loginUser.getId());
-		System.out.println("フレンド承認できました。");
 		return "redirect:/friend";
 	}
 
@@ -91,11 +82,7 @@ public class FriendController {
 	public String rejectedFriend(@RequestParam("friendId") Long friendId,
 			HttpSession session) {
 		Users loginUser = (Users) session.getAttribute("users");
-
-		// フレンド却下のロジック
-		System.out.println("フレンド却下を行います。");
 		friendsService.rejectedFriend(friendId, loginUser.getId());
-
 		return "redirect:/friend";
 	}
 	
@@ -107,13 +94,10 @@ public class FriendController {
 	public String cancelFriend(@RequestParam("friendId") Long friendId,
 			HttpSession session) {
 		Users loginUser = (Users) session.getAttribute("users");
-
-		// フレンド却下のロジック
-		System.out.println("フレンド解除を行います。");
 		friendsService.deleteFriend(friendId, loginUser.getId());
-
 		return "redirect:/friend";
 	}
+	
 	/**
 	 * フレンド解除処理
 	 * @return　profile画面
@@ -122,11 +106,7 @@ public class FriendController {
 	public String deleteFriend(@RequestParam("friendId") Long friendId,
 			HttpSession session) {
 		Users loginUser = (Users) session.getAttribute("users");
-
-		// フレンド却下のロジック
-		System.out.println("フレンド解除を行います。");
 		friendsService.deleteFriend(friendId, loginUser.getId());
-
 		return "redirect:/friend";
 	}
 }

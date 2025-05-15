@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/login")
 public class LoginController {
 
-	@GetMapping("/index")  // /login/index にGETリクエストが来たときに、このメソッドが呼ばれる
+	@GetMapping("/index")  
 
 	public String index() {
 		return "login/index";

@@ -21,7 +21,6 @@
 					<!-- News & Updates Traffic -->
 					<div class="card">
 						<div class="card-body">
-							<h5 class="card-title">フレンドリスト</h5>
 							<!-- Table with stripped rows -->
 							<table class="table table-striped">
 								<thead>
@@ -80,12 +79,10 @@
 																class="btn btn-secondary rounded-pill">申請をやめる</button>
 														</form>
 													</div>
-
 												</div>
 
 												<div th:case="9">
 													<div th:if="${friendDirectionMap[users.id]} == 'received'">
-
 														<form th:action="@{/friend/cancel}" method="post"
 															style="display:inline;">
 															<input type="hidden" name="friendId" th:value="${users.id}">

@@ -24,7 +24,6 @@ public class FriendsService {
 
 	/**
 	 * ステータス検索を行う。
-	 *
 	 */
 	public Optional<Friends> findFriendshipStatus(Long userId1, Long userId2) {
 		return friendsRepository.findFriendRelationship(userId1, userId2);
@@ -84,24 +83,19 @@ public class FriendsService {
 
 	    friend.setFriendStatus(10); // 10 = ブロック
 	    friendsRepository.save(friend);
-
 	    System.out.println("友達関係をブロックしました。");
 	}
 
 	
 	/**
-	 * フレンド取り消し処理を行う。
+	 * フレンド関係削除処理を行う。
 	 */
 	public void deleteFriend(Long loginUserId, Long requesterId) {
 		  Friends friend = friendsRepository.findByUsersIdAndFriendId(loginUserId, requesterId)
 			        .orElseGet(() -> friendsRepository.findByUsersIdAndFriendId(requesterId, loginUserId).orElse(null));
-		  
 		  if (friend != null) {
 			  friendsRepository.delete(friend);
-		        System.out.println("フレンド関係を解除しました。");
-		    } else {
-		        System.out.println("該当するフレンド関係が見つかりませんでした。");
-		    }
+		    } 
 	}
 	
 	

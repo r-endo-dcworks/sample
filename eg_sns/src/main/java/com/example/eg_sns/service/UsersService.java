@@ -27,16 +27,11 @@ public class UsersService {
 	/**
 	 * ユーザー検索を行う。
 	 * ログインIDを指定し、ユーザーを検索する。
-	 *
 	 * @param loginId ログインID
 	 * @return ユーザー情報を返す。
 	 */
 	public Users findUsers(String loginId) {
-		log.info("ユーザーを検索します。：loginId={}", loginId);
-
 		Users users = repository.findByLoginId(loginId);
-		log.info("ユーザー検索結果。：loginId={}, users={}", loginId, users);
-
 		return users;
 	}
 
@@ -49,11 +44,7 @@ public class UsersService {
 	 * @return ユーザー情報を返す。
 	 */
 	public Users findUsers(String loginId, String password) {
-		log.info("ユーザーを検索します。：loginId={}, password={}", loginId, password);
-
 		Users users = repository.findByLoginIdAndPassword(loginId, password);
-		log.info("ユーザー検索結果。：loginId={}, password={}, users={}", loginId, password);
-
 		return users;
 	}
 
@@ -97,7 +88,6 @@ public class UsersService {
 	 * @param requestModifyPassword ユーザーDTO
 	 */
 	public void updatePassword(Users users, String newPassword) {
-		// ユーザーのパスワードを更新
 		users.setPassword(newPassword);
 		repository.save(users);
 	}
@@ -118,8 +108,7 @@ public class UsersService {
 	 * @return ユーザー情報
 	 */
 	public Users findById(Long id) {
-		log.info("ユーザーをIDで検索します。：id={}", id);
-		return repository.findById(id).orElse(null); // orElseThrow()でもOK
+		return repository.findById(id).orElse(null); 
 	}
 
 	/**
