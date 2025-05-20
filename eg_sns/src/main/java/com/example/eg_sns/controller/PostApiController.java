@@ -12,35 +12,39 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.eg_sns.entity.Posts;
 import com.example.eg_sns.service.PostsService;
+
 @RestController
 @RequestMapping("/api")
 public class PostApiController {
 
-    @Autowired
-    private PostsService postsService;
+	@Autowired
+	private PostsService postsService;
 
-    @GetMapping("/getPosts")
-    public Map<String, Object> getPosts(@RequestParam(name = "sinceId", required = false) Long sinceId) {
+	@GetMapping("/getPosts")
+	public Map<String, Object> getPosts(@RequestParam(name = "sinceId", required = false) Long sinceId) {
 
-        List<Posts> posts = (sinceId == null)
-                ? postsService.findLatestPosts() // 最初の5件（または10件）
-                : postsService.findNextPosts(sinceId); // IDがsinceIdより小さいものを取得（古い順）
 
-        // 次ページの有無と次の sinceId を設定
-        boolean hasNext = posts.size() == 5; // 5件ずつ読み込むと仮定
-        Long nextSinceId = hasNext ? posts.get(posts.size() - 1).getId() : null;
+		List<Posts> posts;		
+		if (sinceId == null){
+			posts = postsService.findLatestPosts();
+		} else {
+			posts = postsService.findNextPosts(sinceId);
+		}
+		
+		
+		// 次ページの有無と次の sinceId を設定
+		boolean hasNext = posts.size() == 5; // 取得した投稿が５件未満の場合falseを返す
+		Long nextSinceId = hasNext ? posts.get(posts.size() - 1).getId() : null;
 
-        // JSONで返す
-        Map<String, Object> result = new HashMap<>();
-        result.put("data", posts);
+		
+		Map<String, Object> result = new HashMap<>();
+		result.put("data", posts);
 
-        Map<String, Object> pageInfo = new HashMap<>();
-        pageInfo.put("has_next", hasNext);
-        pageInfo.put("since_id", nextSinceId);
-        result.put("page_info", pageInfo);
+		Map<String, Object> pageInfo = new HashMap<>();
+		pageInfo.put("has_next", hasNext);
+		pageInfo.put("since_id", nextSinceId);
+		result.put("page_info", pageInfo);
 
-        return result;
-    }
+		return result;
+	}
 }
-
-

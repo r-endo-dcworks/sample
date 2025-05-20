@@ -8,6 +8,7 @@
 
 	<!-- ======= Header ======= -->
 	<div th:replace="~{common/shoulder_fragment::header}"></div>
+	<meta name="user-id" th:content="${loginUser.id}" />
 
 	<!-- ======= Sidebar ======= -->
 	<div th:replace="~{common/shoulder_fragment::sidebar}"></div>
@@ -35,11 +36,17 @@
 
 										<div class="d-flex align-items-center justify-content-end pe-3 ms-auto gap-3">
 
+
+											
+
 											<div class="nav-item d-flex align-items-center pe-3 ms-auto">
-												<a href="#" class="like-button icon show me-1">
-													<i class="bi bi-heart" style="font-size: 1.5rem;"></i>
+												<a href="#" class="like-button me-2" th:attr="data-post-id=${posts.id}">
+													<i class="bi"
+														th:classappend="${likedMap[posts.id]} ? 'bi-heart-fill' : 'bi-heart'"
+														style="font-size: 1.2rem;"></i>
 												</a>
-												<p class="mb-0 like-count">0</p>
+												<p class="mb-0 like-count" th:text="${likeCountMap[posts.id]}"
+													style="font-size: 1.2rem;">0</p>
 											</div>
 
 											<div class="nav-item dropdown pe-3 ms-auto">

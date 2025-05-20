@@ -132,4 +132,8 @@ public class PostsService {
 	        postImagesRepository.save(postImages); 
 		}
 	}
+	
+	
+	
+	
 }

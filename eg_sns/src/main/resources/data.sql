@@ -87,9 +87,9 @@ COMMENT = '投稿コメント';
 
 
 -- -----------------------------------------------------
--- Table `eg_sns`.`post_goods`
+-- Table `eg_sns`.`post_like`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `eg_sns`.`post_goods` (
+CREATE TABLE IF NOT EXISTS `eg_sns`.`post_like` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `posts_id` BIGINT NOT NULL COMMENT '投稿ID',
   `users_id` BIGINT NOT NULL COMMENT 'ユーザーID',
@@ -97,8 +97,8 @@ CREATE TABLE IF NOT EXISTS `eg_sns`.`post_goods` (
   `updated` DATETIME NOT NULL COMMENT '更新日時',
   PRIMARY KEY (`id`),
   UNIQUE (posts_id, users_id),
-  INDEX `fk_post_goods_posts1_idx` (`posts_id` ASC) VISIBLE,
-  INDEX `fk_post_goods_users1_idx` (`users_id` ASC) VISIBLE)
+  INDEX `fk_post_like_posts1_idx` (`posts_id` ASC) VISIBLE,
+  INDEX `fk_post_like_users1_idx` (`users_id` ASC) VISIBLE)
 ENGINE = InnoDB
 COMMENT = 'いいねボタン';
 

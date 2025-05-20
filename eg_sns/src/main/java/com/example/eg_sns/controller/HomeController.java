@@ -1,6 +1,8 @@
 package com.example.eg_sns.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -18,10 +20,9 @@ import com.example.eg_sns.dto.RequestPosts;
 import com.example.eg_sns.entity.Posts;
 import com.example.eg_sns.entity.Users;
 import com.example.eg_sns.service.CommentsService;
+import com.example.eg_sns.service.LikeService;
 import com.example.eg_sns.service.PostsService;
 import com.example.eg_sns.service.UsersService;
-
-
 
 @Controller
 @RequestMapping("/home")
@@ -33,6 +34,8 @@ public class HomeController {
 	private PostsService postsService;
 	@Autowired
 	private CommentsService commentsService;
+	@Autowired
+	private LikeService likeService;
 
 	@GetMapping(path = { "", "/" })
 	public String index(HttpSession session, Model model,
@@ -40,13 +43,30 @@ public class HomeController {
 			String comment) {
 		Users loginUser = (Users) session.getAttribute("users");
 		model.addAttribute("loginUser", loginUser);
-		
 		Users users = (Users) session.getAttribute("users");
 		model.addAttribute("users", users);
-		
+		session.setAttribute("userId", users.getId()); 
+
 		List<Posts> postsList = postsService.findLatestPosts();//投稿５件取得
 		model.addAttribute("posts", postsList);
-		
+		  Map<Long, Integer> likeCountMap = new HashMap<>();
+		    Map<Long, Boolean> likedMap = new HashMap<>();
+
+		    for (Posts post : postsList) {
+		        Long postId = post.getId();
+		        int likeCount = likeService.countLikesByPostId(postId);
+		        likeCountMap.put(postId, likeCount);
+
+		        if (loginUser != null) {
+		            boolean liked = likeService.isLikedByUser(postId, loginUser.getId());
+		            likedMap.put(postId, liked);
+		        } else {
+		            likedMap.put(postId, false);
+		        }
+		    }
+
+		    model.addAttribute("likeCountMap", likeCountMap);
+		    model.addAttribute("likedMap", likedMap);
 		Long sinceId = postsList.isEmpty() ? 0L : postsList.get(postsList.size() - 1).getId();
 		model.addAttribute("sinceId", sinceId);
 

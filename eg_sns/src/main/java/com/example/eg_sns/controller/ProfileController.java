@@ -1,6 +1,8 @@
 package com.example.eg_sns.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import jakarta.servlet.http.HttpSession;
@@ -25,6 +27,7 @@ import com.example.eg_sns.entity.Posts;
 import com.example.eg_sns.entity.Users;
 import com.example.eg_sns.service.CommentsService;
 import com.example.eg_sns.service.FriendsService;
+import com.example.eg_sns.service.LikeService;
 import com.example.eg_sns.service.PostsService;
 import com.example.eg_sns.service.UsersService;
 
@@ -40,7 +43,11 @@ public class ProfileController {
 	private FriendsService friendsService;
 	@Autowired
 	private CommentsService commentsService;
+	@Autowired
+	private LikeService likeService;
 
+	
+	
 	@GetMapping("/{loginId}")
 	public String index(@PathVariable("loginId") String loginId,
 			HttpSession session, Model model) {
@@ -49,6 +56,7 @@ public class ProfileController {
 
 		model.addAttribute("loginUser", loginUser);
 		model.addAttribute("users", users);
+		session.setAttribute("userId", users.getId()); 
 
 		Optional<Friends> friendOpt = friendsService.findFriendshipStatus(loginUser.getId(), users.getId());
 		friendOpt.ifPresent(friend -> model.addAttribute("friendStatus", friend.getFriendStatus()));
@@ -56,6 +64,25 @@ public class ProfileController {
 		List<Posts> postsList = postsService.findPostsByUserId(users.getId());
 		model.addAttribute("posts", postsList);
 
+		  Map<Long, Integer> likeCountMap = new HashMap<>();
+		    Map<Long, Boolean> likedMap = new HashMap<>();
+
+		    for (Posts post : postsList) {
+		        Long postId = post.getId();
+		        int likeCount = likeService.countLikesByPostId(postId);
+		        likeCountMap.put(postId, likeCount);
+
+		        if (loginUser != null) {
+		            boolean liked = likeService.isLikedByUser(postId, loginUser.getId());
+		            likedMap.put(postId, liked);
+		        } else {
+		            likedMap.put(postId, false);
+		        }
+		    }
+
+		    model.addAttribute("likeCountMap", likeCountMap);
+		    model.addAttribute("likedMap", likedMap);
+		
 		model.addAttribute("page", "profile");
 		return "profile/index";
 	}

@@ -10,9 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.example.eg_sns.dto.RequestAccount;
 import com.example.eg_sns.service.UsersService;
 
-/**
- * ※TODO 適宜実装を入れてください。
- */
+
 @Controller
 @RequestMapping("/account")
 public class AccountController {

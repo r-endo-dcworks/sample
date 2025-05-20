@@ -16,16 +16,13 @@ function callWebAPI() {
 		//返ってきたデータを変換
 		.then(response => response.json())
 		.then(ret => {
-			console.log('test');
 
 			//次にデータがあるかを確認
 			//読み込む投稿がない場合ボタンを削除
 			//ある場合は次回用のsinceIdを取得
 			if (!ret.page_info.has_next) {
-				var moreSection = document.getElementById('btn-more-section');
-				moreSection.remove();
+				document.getElementById('btn-more-section')?.remove();
 			} else {
-				var button = document.getElementById('btn-more');
 				button.setAttribute('data-sinceid', ret.page_info.since_id);
 			}
 
@@ -75,11 +72,10 @@ function callWebAPI() {
 							const img = document.createElement('img');
 							img.src = `/assets/img/${comment.users.iconUri}`;
 							img.classList.add('rounded-circle');
-							img.style.width = '50px';
-							img.style.height = '50px';
-							img.style.objectFit = 'cover';
-							img.style.marginRight = '45px';
-
+							Object.assign(img.style, {
+										width: '50px', height: '50px', objectFit: 'cover', marginRight: '45px'
+									});
+									img.classList.add('rounded-circle');
 							const textWrapper = document.createElement('div');
 
 							//コメント者の名前
@@ -165,16 +161,41 @@ function callWebAPI() {
 					const value = inputComment.value.trim();
 
 					if (!value) {
-						e.preventDefault(); // 送信をキャンセル
-						inputComment.classList.add('is-invalid'); // Bootstrapの赤枠
-						invalidDiv.style.display = 'block'; // メッセージ表示
-					} else {
-						inputComment.classList.remove('is-invalid');
-						invalidDiv.style.display = 'none';
+						e.preventDefault(); // 入力が空なら送信しない
+						inputComment.classList.add('is-invalid');
+						invalidDiv.style.display = 'block';
+						return;
 					}
+
+					e.preventDefault(); // ← ページ遷移を防ぐ
+
+					// バリデーション通過 → Ajaxで送信
+					fetch('/home/comment', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/x-www-form-urlencoded',
+						},
+						body: `postId=${encodeURIComponent(posts.id)}&comment=${encodeURIComponent(value)}`
+					})
+					.then(res => {
+						if (res.ok) {
+							// 成功後の処理：コメントクリアや追加など
+							inputComment.value = '';
+							console.log("コメント送信完了");
+
+							// オプション：コメント再取得など
+						} else {
+							console.error('送信失敗');
+						}
+					})
+					.catch(err => {
+						console.error('通信エラー:', err);
+					});
 				});
+
 				// card-bodyに追加
 				cardBody.appendChild(form);
+				//applyLikeButtonLogic(clone);
 				document.getElementById('posts-container').appendChild(clone)
 			}
 			
