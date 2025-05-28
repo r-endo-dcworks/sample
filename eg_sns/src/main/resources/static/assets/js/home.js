@@ -82,7 +82,7 @@ function callWebAPI() {
 							const name = document.createElement('a');
 							name.href = `/profile/${comment.users.loginId}`;
 							name.textContent = comment.users.name;
-							name.classList.add('ms-2', 'mb-0', 'fw-bold',);
+							name.classList.add( 'fw-bold');
 							name.style.color = '#012970';
 							name.style.display = 'inline-block';
 
