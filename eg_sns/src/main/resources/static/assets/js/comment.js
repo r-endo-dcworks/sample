@@ -43,6 +43,8 @@ export function createCommentElement(comment) {
 	  marginLeft: '0' 
 	});
 
+	
+	
 	const textWrapper = document.createElement('div');	
 
 	textWrapper.append(a, p);
