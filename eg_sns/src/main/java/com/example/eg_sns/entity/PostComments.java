@@ -10,13 +10,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * 投稿画像Entityクラス。
+ * 投稿コメントEntityクラス。
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -25,35 +25,22 @@ import lombok.EqualsAndHashCode;
 
 public class PostComments extends EntityBase {
 
-
-	
-	/** ID */
 	@Id
-	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	/** 投稿ID */
-	@Column(name = "posts_id", nullable = false)
-	private Long postsId;
-
-	/** ユーザーID */
-	@Column(name = "users_id", nullable = false)
-	private Long usersId;
-
-	/** コメント本文 */
-	@Column(name = "comment", nullable = false)
+	@Column(nullable = false)
 	private String comment;
-	
-	/** ユーザー情報の紐づけ */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "users_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Users users;
-	
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "posts_id", referencedColumnName = "id", insertable = false, updatable = false)
-    @JsonBackReference  // 循環参照を防ぐ
-    private Posts posts;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "posts_id", nullable = false)
+	@JsonIgnore 
+	private Posts posts;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "users_id", nullable = false)
+	private Users users;
 
 }
+
+

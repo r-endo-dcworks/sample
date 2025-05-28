@@ -36,7 +36,7 @@
 												class="fw-bold text-blue text-decoration-none">ユーザー名</a>
 										</h6>
 
-										
+
 										<div class="nav-item d-flex align-items-center pe-3 ms-auto">
 											<a href="#" class="like-button me-2" th:attr="data-post-id=${posts.id}">
 												<i class="bi"
@@ -59,26 +59,15 @@
 										<h5 class="card-title" th:text="${posts.title}">投稿タイトル</h5>
 										<span th:utext="${@stringUtil.nl2br(posts.body)}" class="mb-3 d-block">本文</span>
 
-										<div class="card-body">
-											<!--コメント送信欄-->
-											<form class="row g-3 needs-validation" novalidate
-												th:action="@{/home/comment}" method="post">
-												<div class="col-md-12">
-													<div class="input-group has-validation">
-														<input type="hidden" name="postId" th:value="${posts.id}" />
-														<input name="comment" type="text" class="form-control"
-															placeholder="コメントを入力..." th:value="${comment}" required>
-														<div class="invalid-feedback">コメントを入力してください。</div>
-													</div>
-												</div>
-												<div class="text-center">
-													<button type="submit" class="btn btn-primary">コメントする</button>
-												</div>
-											</form>
-											<!--コメント送信欄終了-->
-										</div>
+										<!-- TODO コメントフォームの調整
+											初期表示はthymeleafで表示
+											コメントフォーム、コメント追加後の新しいコメントはJSで表示
+										 -->
+										<form class="post-comment-form" th:attr="data-post-id=${posts.id}">
+										</form>
 
-										<!--コメント欄-->
+
+										<!--コメント欄（初期表示）-->
 										<div class="card-body">
 											<div class="news">
 												<div class="post-item clearfix">
@@ -91,16 +80,22 @@
 																<h4>
 																	<a th:href="@{/profile/{loginId}(loginId=${postComments.users.loginId})}"
 																		th:text="${postComments.users.name}"
-																		class="ms-2 mb-0">ユーザー名</a>
+																		class="mb-0">ユーザー名</a>
 																</h4>
 																<p th:text="${postComments.comment}">コメント内容</p>
 															</div>
 														</div>
+														
 													</div>
+													<div class="comment-container" th:attr="data-post-id=${posts.id}"></div>
+
 												</div>
 											</div>
 										</div>
-										<!--コメント欄-->
+										<!-- <div class="comment-container"></div> --><!-- ← このdivが必要 -->
+
+										<!--コメント欄終了-->
+
 									</div>
 								</div>
 							</div>
@@ -123,7 +118,7 @@
 										<h6 class="ms-2 mb-0">
 											<a class="user-name fw-bold text-blue text-decoration-none">ユーザー名</a>
 										</h6>
-										
+
 										<!--TODO いいね機能実装-->
 										<div class="nav-item d-flex align-items-center pe-3 ms-auto">
 											<a href="#" class="like-button me-2">
@@ -131,7 +126,7 @@
 											</a>
 											<p class="mb-0 like-count" style="font-size: 1.2rem;">0</p>
 										</div>
-										
+
 
 									</div>
 
@@ -236,8 +231,20 @@
 
 	<!-- ======= Footer ======= -->
 	<div th:replace="~{common/shoulder_fragment::footer}"></div>
-	<script>
-		console.log("HTMLの中のスクリプトは実行されています");
+	<script type="module">
+		import {initCommentForPost} from '/assets/js/comment.js';
+
+		document.addEventListener('DOMContentLoaded', () => {
+			// すべての投稿にコメントフォームを追加
+			document.querySelectorAll('.post-comment-form').forEach(container => {
+				const postsId = container.dataset.postId;
+				if (postsId) {
+					initCommentForPost(postsId, container);
+				}
+			});
+		});
+		
+		
 	</script>
 	<script src="/assets/js/like.js"></script>
 	<script src="/assets/js/home.js"></script>

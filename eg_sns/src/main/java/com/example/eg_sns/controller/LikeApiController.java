@@ -29,17 +29,8 @@ public class LikeApiController {
 	@PostMapping("/like/{postsId}")
 	public ResponseEntity<Map<String, Object>> toggleLike(@PathVariable Long postsId,
 			HttpSession session) {
-		Long usersId = (Long) session.getAttribute("userId"); // セッションから取得
-		
-		System.out.println("セッションから取得した userId = " + session.getAttribute("userId"));
-
-
-		  if (usersId == null) {
-	            return ResponseEntity.status(401).body(Map.of("error", "ユーザー未認証"));
-	        }
-		
-		Map<String, Object> result = likeService.toggleLike(postsId, usersId); // サービス呼び出し
-
-		return ResponseEntity.ok(result); // JSONで返却
+		Long usersId = (Long) session.getAttribute("userId"); 
+		Map<String, Object> result = likeService.toggleLike(postsId, usersId); 
+		return ResponseEntity.ok(result); 
 	}
 }

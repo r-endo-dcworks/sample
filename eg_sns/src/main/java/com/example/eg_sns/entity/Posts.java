@@ -13,17 +13,19 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * トピックEntityクラス。
  *
  * @author tomo-sato
  */
-@Data
+@Getter
+@Setter
+@ToString(exclude = "postCommentsList")
 @EqualsAndHashCode(callSuper=false)
 @Entity
 @Table(name = "posts")
@@ -51,7 +53,7 @@ public class Posts extends EntityBase {
 	
 	/** コメント情報の紐づけ */
 	 @OneToMany(mappedBy = "posts", fetch = FetchType.LAZY)
-	    @JsonManagedReference  // 循環参照を防ぐ
+
 	    private List<PostComments> postCommentsList;
 
 	   /** 投稿画像情報の紐づけ（一方向リレーション） */
