@@ -26,7 +26,6 @@ function initLikeButton(button) {
 					icon.classList.remove('bi-heart-fill');
 					icon.classList.add('bi-heart');
 				}
-
 				likeCount.textContent = count;
 			});
 	});

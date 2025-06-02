@@ -20,6 +20,8 @@ function callWebAPI() {
 				button.setAttribute('data-sinceid', ret.page_info.since_id);
 			}
 
+			
+			//TODO 下記の処理の意味
 			for (let posts of ret.data) {
 				const template = document.getElementById('template-posts');
 				const clone = template.cloneNode(true);  // contentなし
@@ -77,12 +79,8 @@ function callWebAPI() {
 					icon.classList.add('bi-heart');
 				}
 
-
-
 				const likeCount = clone.querySelector('.js-like-count');
 				likeCount.textContent = posts.likeCount
-
-
 
 				//投稿コメント
 				const commentContainer = clone.querySelector('.post-comments');
@@ -124,11 +122,10 @@ function callWebAPI() {
 					}
 				}
 
-
 				const container = clone.querySelector('.comment-container');
 				const postId = posts.post.id;
 				if (container && postId) {
-					container.setAttribute('data-post-id', postId); // ← 忘れずに追加
+					container.setAttribute('data-post-id', postId); 
 					initCommentForPost(postId, container);
 				}
 
