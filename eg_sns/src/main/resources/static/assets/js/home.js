@@ -1,25 +1,19 @@
-/**
- * 
- */
+//import { initLikeButton } from './like.js'; // ←相対パス or 絶対パスに注意
+import { initCommentForPost, createCommentElement } from './comment.js';
+//TODO からのファイルを打ってみ
+
 function callWebAPI() {
-
-	console.log("ボタンが押されました");
-
-	//前回の最後の投稿のIDの取得
-	var button = document.getElementById('btn-more');
-	var sinceId = button.getAttribute('data-sinceid');
-	console.log("sinceId:" + sinceId);
+	const button = document.getElementById('btn-more');
+	const sinceId = button.getAttribute('data-sinceid');
+	console.log("callWebApiが読み込まれました。sinceId:" + sinceId);
 
 
 	// サーバーにリクエストを送る
 	fetch('http://localhost:8080/api/getPosts?sinceId=' + sinceId)
-		//返ってきたデータを変換
 		.then(response => response.json())
 		.then(ret => {
+			console.log('Response JSON:', ret);
 
-			//次にデータがあるかを確認
-			//読み込む投稿がない場合ボタンを削除
-			//ある場合は次回用のsinceIdを取得
 			if (!ret.page_info.has_next) {
 				document.getElementById('btn-more-section')?.remove();
 			} else {
@@ -28,30 +22,31 @@ function callWebAPI() {
 
 			for (let posts of ret.data) {
 				const template = document.getElementById('template-posts');
-				const clone = template.content.cloneNode(true);
+				const clone = template.cloneNode(true);  // contentなし
+				clone.style.display = "";
+				clone.removeAttribute('id');  // idの重複を避けるため外す
 
-				// タイトルのセット
-				clone.querySelector('.posts-title').textContent = posts.title;
 
-				// 本文の改行を <br> に変換してセット
+				//投稿タイトル
+				clone.querySelector('.posts-title').textContent = posts.post.title;
+
+				//投稿本文
 				const bodyElement = clone.querySelector('.posts-body');
-				bodyElement.innerHTML = posts.body.replace(/\n/g, '<br>');
+				bodyElement.innerHTML = posts.post.body.replace(/\n/g, '<br>');
 
-				// ユーザー情報を挿入
+				//投稿者情報
 				const userIcon = clone.querySelector('.user-icon');
 				const userName = clone.querySelector('.user-name');
 				const userLink = clone.querySelector('.user-name');
-
-				if (posts.users) {
-					userIcon.src = `/assets/img/${posts.users.iconUri}`; // ユーザーアイコン画像のURL
-					userName.textContent = posts.users.name; // ユーザー名
-					userLink.href = `/profile/${posts.users.loginId}`; // ユーザープロフィールへのリンク
+				if (posts.post.users) {
+					userIcon.src = `/assets/img/${posts.post.users.iconUri}`;
+					userName.textContent = posts.post.users.name;
+					userLink.href = `/profile/${posts.post.users.loginId}`;
 				}
 
-
-				// 画像を挿入
+				//投稿画像
 				const imageContainer = clone.querySelector('.post-images');
-				const image = posts.postImagesList?.[0];
+				const image = posts.post.postImagesList?.[0];
 				if (image?.imageUri) {
 					const img = document.createElement('img');
 					img.src = `/assets/img/${image.imageUri}`;
@@ -60,38 +55,63 @@ function callWebAPI() {
 					imageContainer.appendChild(img);
 				}
 
-				//コメントを挿入
+
+				//いいねボタン
+				const likeButton = clone.querySelector('.like-button');
+				likeButton.setAttribute('data-post-id', posts.post.id);
+
+				if (likeButton) {
+					window.initLikeButton(likeButton); // ← like.jsの関数を呼び出す
+				}
+
+
+				const liked = clone.querySelector('.js-like-button');
+				const icon = liked.querySelector('i');
+
+				// likedフラグに応じてハートの表示を変更
+				if (posts.liked) {
+					icon.classList.remove('bi-heart');
+					icon.classList.add('bi-heart-fill');
+				} else {
+					icon.classList.remove('bi-heart-fill');
+					icon.classList.add('bi-heart');
+				}
+
+
+
+				const likeCount = clone.querySelector('.js-like-count');
+				likeCount.textContent = posts.likeCount
+
+
+
+				//投稿コメント
 				const commentContainer = clone.querySelector('.post-comments');
-				if (posts.postCommentsList && Array.isArray(posts.postCommentsList)) {
-					for (const comment of posts.postCommentsList) {
+				if (posts.post.postCommentsList && Array.isArray(posts.post.postCommentsList)) {
+					for (const comment of posts.post.postCommentsList) {
 						if (comment.comment) {
 							const wrapper = document.createElement('div');
 							wrapper.classList.add('d-flex', 'align-items-start', 'mb-2');
 
-							//コメント・アイコン画像
 							const img = document.createElement('img');
 							img.src = `/assets/img/${comment.users.iconUri}`;
-							img.classList.add('rounded-circle');
 							Object.assign(img.style, {
-										width: '50px', height: '50px', objectFit: 'cover', marginRight: '45px'
-									});
-									img.classList.add('rounded-circle');
+								width: '50px', height: '50px', objectFit: 'cover', marginRight: '45px'
+							});
+							img.classList.add('rounded-circle');
+
 							const textWrapper = document.createElement('div');
 
-							//コメント者の名前
 							const name = document.createElement('a');
 							name.href = `/profile/${comment.users.loginId}`;
 							name.textContent = comment.users.name;
-							name.classList.add( 'fw-bold');
+							name.classList.add('fw-bold');
 							name.style.color = '#012970';
 							name.style.display = 'inline-block';
 
-							//コメント本文
 							const p = document.createElement('p');
 							p.textContent = comment.comment;
-							//p.classList.add('mb-0');
 							p.style.color = '#777777';
-							p.style.fontSize 　= '14px';
+							p.style.fontSize = '14px';
 
 							textWrapper.appendChild(name);
 							textWrapper.appendChild(p);
@@ -104,107 +124,26 @@ function callWebAPI() {
 					}
 				}
 
-				const cardBody = clone.querySelector('.comment-form-area');
 
-				// フォーム要素の作成
-				const form = document.createElement('form');
-				form.className = 'row g-3 needs-validation';
-				form.action = '/home/comment';
-				form.method = 'post';
-				form.noValidate = true;
+				const container = clone.querySelector('.comment-container');
+				const postId = posts.post.id;
+				if (container && postId) {
+					container.setAttribute('data-post-id', postId); // ← 忘れずに追加
+					initCommentForPost(postId, container);
+				}
 
-				// postIdのhidden input
-				const inputHidden = Object.assign(document.createElement('input'), {
-					type: 'hidden',
-					name: 'postId',
-					value: posts.id
-				});
-
-				// コメント入力欄
-				const inputComment = Object.assign(document.createElement('input'), {
-					type: 'text',
-					name: 'comment',
-					className: 'form-control',
-					placeholder: 'コメントを入力...',
-					required: true
-				});
-
-				// バリデーションメッセージ
-				const invalidDiv = document.createElement('div');
-				invalidDiv.className = 'invalid-feedback';
-				invalidDiv.textContent = 'コメントを入力してください。';
-				invalidDiv.style.display = 'none';
-
-				// 入力グループ
-				const inputGroup = document.createElement('div');
-				inputGroup.className = 'input-group has-validation';
-				inputGroup.append(inputHidden, inputComment, invalidDiv);
-
-				// コメント入力用のcolラッパー
-				const colDiv = document.createElement('div');
-				colDiv.className = 'col-md-12';
-				colDiv.appendChild(inputGroup);
-
-				// 送信ボタン
-				const submitBtn = document.createElement('button');
-				submitBtn.type = 'submit';
-				submitBtn.className = 'btn btn-primary';
-				submitBtn.textContent = 'コメントする';
-
-				const submitDiv = document.createElement('div');
-				submitDiv.className = 'text-center';
-				submitDiv.appendChild(submitBtn);
-
-				// formにすべて追加
-				form.append(colDiv, submitDiv);
-				form.addEventListener('submit', function(e) {
-					const value = inputComment.value.trim();
-
-					if (!value) {
-						e.preventDefault(); // 入力が空なら送信しない
-						inputComment.classList.add('is-invalid');
-						invalidDiv.style.display = 'block';
-						return;
-					}
-
-					e.preventDefault(); // ← ページ遷移を防ぐ
-
-					// バリデーション通過 → Ajaxで送信
-					fetch('/home/comment', {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/x-www-form-urlencoded',
-						},
-						body: `postId=${encodeURIComponent(posts.id)}&comment=${encodeURIComponent(value)}`
-					})
-					.then(res => {
-						if (res.ok) {
-							// 成功後の処理：コメントクリアや追加など
-							inputComment.value = '';
-							console.log("コメント送信完了");
-
-							// オプション：コメント再取得など
-						} else {
-							console.error('送信失敗');
-						}
-					})
-					.catch(err => {
-						console.error('通信エラー:', err);
-					});
-				});
-
-				// card-bodyに追加
-				cardBody.appendChild(form);
-				//applyLikeButtonLogic(clone);
-				document.getElementById('posts-container').appendChild(clone)
+				document.getElementById('posts-container').appendChild(clone);
 			}
-			
 		})
-		.catch(error => {
-			// エラーハンドリング
-			console.error('Error fetching data:', error);
-		});
-		
-		
+
 }
 
+
+document.addEventListener("DOMContentLoaded", function() {
+	const button = document.getElementById('btn-more');
+	if (button) {
+		button.addEventListener("click", function() {
+			callWebAPI();
+		});
+	}
+});
