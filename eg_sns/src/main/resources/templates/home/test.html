@@ -11,34 +11,32 @@
 
 
 
-	<div class="nav-item dropdown pe-3 ms-auto">
-		<a class="icon show" href="#" data-bs-toggle="dropdown" th:if="${loginUser.loginId != users.loginId}">
-			<i class="bi bi-three-dots"></i>
-		</a>
-		<ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
-			<li>
-				<form th:action="@{/profile/rejected}" method="post" style="display:inline;">
-					<input type="hidden" name="friendId" th:value="${users.id}">
-					<button type="submit" class="dropdown-item">ブロックする</button>
-				</form>
-			</li>
-			
-
-			<li th:if="${friendDirectionMap[users.id]} == 'received'">
-				<hr class="dropdown-divider">
-			</li>
-			<li th:if="${friendDirectionMap[users.id]} == 'received'">
-				<form th:action="@{/profile/rejected}" method="post" style="display:inline;">
-					<input type="hidden" name="friendId" th:value="${users.id}">
-					<button type="submit" class="dropdown-item">ブロックする</button>
-				</form>
-			</li>
+	JSで取得した投稿
+	<template id="template-posts">
+		<div class="card mt-3">
+			<div class="d-flex align-items-center bg-success bg-opacity-10 p-2">
+				<img class="user-icon rounded-circle" alt="Profile"
+					style="width: 40px; height: 40px; object-fit: cover;">
+				<h6 class="ms-2 mb-0">
+					<a class="user-name fw-bold text-blue text-decoration-none">ユーザー名</a>
+				</h6>
+				
 			</div>
 
+			<div class="post-images mb-2"></div>
+			<div class="card-body">
+				<h5 class="card-title posts-title">投稿タイトル</h5>
+				<span class="posts-body mb-3 d-block">本文</span>
 
 
-		</ul>
-	</div>
+				<div class="card-body">
+					<div class="comment-container" data-post-id=""></div>
+					<div class="post-comments"></div>
+				</div>
+
+			</div>
+		</div>
+	</template>
 
 
 

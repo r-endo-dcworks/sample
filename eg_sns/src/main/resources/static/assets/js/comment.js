@@ -1,17 +1,10 @@
-/**
- *  コメントフォームを作って画面に追加し、
- 送信ボタンを押したときにコメントをAjaxで送信し、
- 送信成功後にコメント欄にコメントを追加表示する処理をする
- */
-
  // ログイン中のユーザー情報を取得
-
  const usersId = document.querySelector('meta[name="user-id"]')?.getAttribute('content');
  	if (usersId) {
  		console.log('ログインユーザーIDを取得しました。LodinId' + usersId);
  	}
 
-
+//コメント追加表示の関数
 export function createCommentElement(comment) {
 	const wrapper = document.createElement('div');
 	wrapper.classList.add('d-flex', 'align-items-center', 'mb-2');
@@ -36,15 +29,12 @@ export function createCommentElement(comment) {
 	//pタグの詳細
 	const p = document.createElement('p');
 	p.textContent = comment.comment;
-	//p.classList.add('') 
 	Object.assign(p.style, {
 	  color: '#777777',
 	  fontSize: '14px',
 	  marginLeft: '0' 
 	});
 
-	
-	
 	const textWrapper = document.createElement('div');	
 
 	textWrapper.append(a, p);
@@ -53,6 +43,7 @@ export function createCommentElement(comment) {
 	return wrapper;
 }
 
+//コメントフォームの関数
 export function initCommentForPost(postsId, container) {
 
 	//formタグの作成
@@ -127,8 +118,6 @@ export function initCommentForPost(postsId, container) {
 			.then(res => res.json()) // サーバからJSONを返す想定
 			.then(comment => {			//commentにはJSONオブジェクトが入る
 				
-				console.log('Response JSON:', comment);
-
 				const container = document.querySelector(`.comment-container[data-post-id="${postsId}"]`);
 				      const div = document.createElement('div');
 				      div.className = 'comment-item';
@@ -146,7 +135,4 @@ export function initCommentForPost(postsId, container) {
 	container.appendChild(form);
 }
 
-function appendComment(container, comment) {
-	const commentElement = createCommentElement(comment);
-	container.appendChild(commentElement);
-}
+

@@ -21,16 +21,10 @@ public class CommentApiController {
 	@PostMapping("/comments")
 	public ResponseEntity<ResponseComments> create(@RequestBody RequestComments request) {
 
-		System.out.println("commentAPIに入りました。");
-		System.out.println("リクエストから取得した getPostsId = " + request.getPostsId());
-		System.out.println("リクエストから取得した getUsersId = " + request.getUsersId());
-		System.out.println("リクエストから取得した getComment = " + request.getComment());
-
 		ResponseComments saved = commentsService.saveComment(
 				request.getPostsId(),
 				request.getUsersId(),
 				request.getComment());
-		System.out.println("saveComment処理が完了しました");
 		return ResponseEntity.ok(saved);
 	}
 }
