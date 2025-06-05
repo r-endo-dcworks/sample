@@ -4,11 +4,12 @@
 <!-- ======= Head ======= -->
 <div th:replace="~{common/shoulder_fragment::head(title = 'SNSサイト - プロフィール')}"></div>
 
-<body>
+<link>
 
 	<!-- ======= Header ======= -->
 	<div th:replace="~{common/shoulder_fragment::header}"></div>
 	<meta name="user-id" th:content="${loginUser.id}" />
+	<link rel="stylesheet" href="home.css" type="text/css">
 	<!-- ======= Sidebar ======= -->
 	<div th:replace="~{common/shoulder_fragment::sidebar}"></div>
 
@@ -22,12 +23,14 @@
 				<div class="col-lg-8">
 					<div class="row">
 						<div class="col-lg-12">
+						
 							<!-- Card with an image on top -->
 							<!--投稿表示-->
 							<div th:each="posts : ${posts}">
 								<div class="card">
 									<!--投稿者情報といいね機能-->
 									<div class="d-flex align-items-center bg-success bg-opacity-10 p-2 ">
+
 										<img th:src="@{'/assets/img/' + ${posts.users.iconUri}}" alt="Profile"
 											class="rounded-circle"
 											style="width: 40px; height: 40px; object-fit: cover;">
@@ -95,13 +98,13 @@
 
 							<!--さらに表示以降の投稿-->
 							<div id="posts-container">
-								<div id="template-posts" style="display: none;">
+								<div class="js-template-posts" style="display: none;">
 									<div class="card mt-3">
 										<div class="d-flex align-items-center bg-success bg-opacity-10 p-2">
-											<img class="user-icon rounded-circle" alt="Profile"
+											<img class="js-user-icon rounded-circle" alt="Profile"
 												style="width: 40px; height: 40px; object-fit: cover;">
 											<h6 class="ms-2 mb-0">
-												<a class="user-name fw-bold text-blue text-decoration-none">ユーザー名</a>
+												<a class="js-user-name fw-bold text-blue text-decoration-none">ユーザー名</a>
 											</h6>
 											<!--いいね機能の表示-->
 											<div class="nav-item d-flex align-items-center pe-3 ms-auto">
@@ -111,10 +114,10 @@
 											  <p class="mb-0 like-count js-like-count" style="font-size: 1.2rem;"></p>
 											</div>
 										</div>
-										<div class="post-images mb-2"></div>
+										<div class="js-post-images mb-2"></div>
 										<div class="card-body">
-											<h5 class="card-title posts-title">投稿タイトル</h5>
-											<span class="posts-body mb-3 d-block">本文</span>
+											<h5 class="card-title js-posts-title">投稿タイトル</h5>
+											<span class="js-posts-body mb-3 d-block">本文</span>
 											<div class="card-body">
 												<div class="comment-container" data-post-id=""></div>
 												<div class="post-comments"></div>

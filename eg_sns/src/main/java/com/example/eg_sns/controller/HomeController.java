@@ -19,7 +19,6 @@ import com.example.eg_sns.dto.RequestAccount;
 import com.example.eg_sns.dto.RequestPosts;
 import com.example.eg_sns.entity.Posts;
 import com.example.eg_sns.entity.Users;
-import com.example.eg_sns.service.CommentsService;
 import com.example.eg_sns.service.LikeService;
 import com.example.eg_sns.service.PostsService;
 import com.example.eg_sns.service.UsersService;
@@ -32,8 +31,6 @@ public class HomeController {
 	private UsersService usersService;
 	@Autowired
 	private PostsService postsService;
-	@Autowired
-	private CommentsService commentsService;
 	@Autowired
 	private LikeService likeService;
 
@@ -111,19 +108,6 @@ public class HomeController {
 			postImagesUri = imageUri;
 		}
 		postsService.save(requestPosts, user.getId(), postImagesUri);
-		return "redirect:/home";
-	}
-
-	/**
-	 * コメント投稿処理
-	 * @return　home画面
-	 */
-	@PostMapping("/comment")
-	public String index(@RequestParam Long postId,
-			@RequestParam String comment,
-			HttpSession session) {
-		Users user = (Users) session.getAttribute("users");
-		commentsService.saveComment(postId, user.getId(), comment);
 		return "redirect:/home";
 	}
 

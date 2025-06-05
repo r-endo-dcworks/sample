@@ -17,6 +17,9 @@ function initLikeButton(button) {
 		})
 			.then(response => response.json())
 			.then(data => {
+				
+				
+				
 				const { likeCount: count, liked } = data;
 
 				if (liked) {
@@ -37,5 +40,4 @@ document.addEventListener('DOMContentLoaded', function() {
 	likeButtons.forEach(initLikeButton);
 });
 
-// グローバル公開 → home.jsなどからも使える
 window.initLikeButton = initLikeButton;
