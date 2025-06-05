@@ -1,6 +1,4 @@
-//import { initLikeButton } from './like.js'; // ←相対パス or 絶対パスに注意
-import { initCommentForPost, createCommentElement } from './comment.js';
-//TODO からのファイルを打ってみ
+import { initCommentForPost } from './comment.js';
 
 function callWebAPI() {
 	const button = document.getElementById('btn-more');
@@ -20,34 +18,31 @@ function callWebAPI() {
 				button.setAttribute('data-sinceid', ret.page_info.since_id);
 			}
 
-			
-			//TODO 下記の処理の意味
 			for (let posts of ret.data) {
-				const template = document.getElementById('template-posts');
+				const template = document.getElementsByClassName('js-template-posts')[0];
+				console.log("templateの中身：", template)
 				const clone = template.cloneNode(true);  // contentなし
 				clone.style.display = "";
-				clone.removeAttribute('id');  // idの重複を避けるため外す
-
+				console.log('cloneの中身', clone);
 
 				//投稿タイトル
-				clone.querySelector('.posts-title').textContent = posts.post.title;
+				clone.querySelector('.js-posts-title').textContent = posts.post.title;
 
 				//投稿本文
-				const bodyElement = clone.querySelector('.posts-body');
+				const bodyElement = clone.querySelector('.js-posts-body');
 				bodyElement.innerHTML = posts.post.body.replace(/\n/g, '<br>');
 
 				//投稿者情報
-				const userIcon = clone.querySelector('.user-icon');
-				const userName = clone.querySelector('.user-name');
-				const userLink = clone.querySelector('.user-name');
+				const userIcon = clone.querySelector('.js-user-icon');
+				const userInfo = clone.querySelector('.js-user-name');
 				if (posts.post.users) {
 					userIcon.src = `/assets/img/${posts.post.users.iconUri}`;
-					userName.textContent = posts.post.users.name;
-					userLink.href = `/profile/${posts.post.users.loginId}`;
+					userInfo.textContent = posts.post.users.name;
+					userInfo.href = `/profile/${posts.post.users.loginId}`;
 				}
 
 				//投稿画像
-				const imageContainer = clone.querySelector('.post-images');
+				const imageContainer = clone.querySelector('.js-post-images');
 				const image = posts.post.postImagesList?.[0];
 				if (image?.imageUri) {
 					const img = document.createElement('img');
@@ -61,16 +56,11 @@ function callWebAPI() {
 				//いいねボタン
 				const likeButton = clone.querySelector('.like-button');
 				likeButton.setAttribute('data-post-id', posts.post.id);
-
 				if (likeButton) {
-					window.initLikeButton(likeButton); // ← like.jsの関数を呼び出す
+					window.initLikeButton(likeButton); 
 				}
-
-
-				const liked = clone.querySelector('.js-like-button');
-				const icon = liked.querySelector('i');
-
 				// likedフラグに応じてハートの表示を変更
+				const icon = likeButton.querySelector('i');
 				if (posts.liked) {
 					icon.classList.remove('bi-heart');
 					icon.classList.add('bi-heart-fill');
@@ -78,7 +68,6 @@ function callWebAPI() {
 					icon.classList.remove('bi-heart-fill');
 					icon.classList.add('bi-heart');
 				}
-
 				const likeCount = clone.querySelector('.js-like-count');
 				likeCount.textContent = posts.likeCount
 
@@ -111,12 +100,8 @@ function callWebAPI() {
 							p.style.color = '#777777';
 							p.style.fontSize = '14px';
 
-							textWrapper.appendChild(name);
-							textWrapper.appendChild(p);
-
-							wrapper.appendChild(img);
-							wrapper.appendChild(textWrapper);
-
+							textWrapper.append(name,p);
+							wrapper.append(img,textWrapper);
 							commentContainer.appendChild(wrapper);
 						}
 					}
@@ -125,10 +110,9 @@ function callWebAPI() {
 				const container = clone.querySelector('.comment-container');
 				const postId = posts.post.id;
 				if (container && postId) {
-					container.setAttribute('data-post-id', postId); 
+					container.setAttribute('data-post-id', postId);
 					initCommentForPost(postId, container);
 				}
-
 				document.getElementById('posts-container').appendChild(clone);
 			}
 		})

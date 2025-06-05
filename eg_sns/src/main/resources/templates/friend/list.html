@@ -33,7 +33,8 @@
 								</thead>
 								<tbody>
 									<tr th:each="users : ${usersList}" th:if="${loginUser.loginId != users.loginId}">
-										<th scope="row"> <img th:src="@{'/assets/img/' + ${users.iconUri}}" alt="アイコン"
+										<th scope="row">
+											<img th:src="@{'/assets/img/' + ${users.iconUri}}" alt="アイコン"
 												class="rounded-circle" width="80" height="80">
 										</th>
 										<td style="width: 10%;">
@@ -98,7 +99,6 @@
 
 												<div th:case="10">
 													<div th:if="${friendDirectionMap[users.id]} == 'sent'">
-
 														<form th:action="@{/friend/cancel}" method="post"
 															style="display:inline;">
 															<input type="hidden" name="friendId" th:value="${users.id}">
@@ -108,7 +108,7 @@
 													</div>
 													<div th:if="${friendDirectionMap[users.id]} == 'received'">
 														<button class="btn btn-secondary rounded-pill"
-															disabled>却下されました</button>
+															disabled>ブロックされています</button>
 													</div>
 												</div>
 

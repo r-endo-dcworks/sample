@@ -1,8 +1,5 @@
- // ログイン中のユーザー情報を取得
- const usersId = document.querySelector('meta[name="user-id"]')?.getAttribute('content');
- 	if (usersId) {
- 		console.log('ログインユーザーIDを取得しました。LodinId' + usersId);
- 	}
+// ログイン中のユーザー情報を取得
+const usersId = document.querySelector('meta[name="user-id"]')?.getAttribute('content');
 
 //コメント追加表示の関数
 export function createCommentElement(comment) {
@@ -22,20 +19,20 @@ export function createCommentElement(comment) {
 	a.href = `/profile/${comment.userLoginId}`;
 	a.textContent = comment.userName;
 	Object.assign(a.style, {
-	  color: '#012970',
-	  fontWeight: 'bold',
+		color: '#012970',
+		fontWeight: 'bold',
 	});
 
 	//pタグの詳細
 	const p = document.createElement('p');
 	p.textContent = comment.comment;
 	Object.assign(p.style, {
-	  color: '#777777',
-	  fontSize: '14px',
-	  marginLeft: '0' 
+		color: '#777777',
+		fontSize: '14px',
+		marginLeft: '0'
 	});
 
-	const textWrapper = document.createElement('div');	
+	const textWrapper = document.createElement('div');
 
 	textWrapper.append(a, p);
 	wrapper.append(img, textWrapper);
@@ -62,70 +59,72 @@ export function initCommentForPost(postsId, container) {
 	submitBtn.className = 'btn btn-primary';
 	submitBtn.textContent = 'コメントする';
 
-	form.append(inputComment,submitBtn);
-	
+	form.append(inputComment, submitBtn);
+
 	form.className = 'row g-3 needs-validation';
-					form.action = '/api/comments';
-					form.method = 'post';
-					form.noValidate = true;
+	form.action = '/api/comments';
+	form.method = 'post';
+	form.noValidate = true;
 
-					// postIdのhidden input
-					const inputHidden = Object.assign(document.createElement('input'), {
-						type: 'hidden',
-						name: 'postsId',
-						value: postsId
-					});
-					
-					// 入力グループ
-					const inputGroup = document.createElement('div');
-					inputGroup.className = 'input-group has-validation';
-					inputGroup.append(inputHidden, inputComment);
+	// postIdのhidden input
+	const inputHidden = Object.assign(document.createElement('input'), {
+		type: 'hidden',
+		name: 'postsId',
+		value: postsId
+	});
 
-					// コメント入力用のcolラッパー
-					const colDiv = document.createElement('div');
-					colDiv.className = 'col-md-12';
-					colDiv.appendChild(inputGroup);
+	// 入力グループ
+	const inputGroup = document.createElement('div');
+	inputGroup.className = 'input-group has-validation';
+	inputGroup.append(inputHidden, inputComment);
 
-					const submitDiv = document.createElement('div');
-					submitDiv.className = 'text-center';
-					submitDiv.appendChild(submitBtn);
+	// コメント入力用のcolラッパー
+	const colDiv = document.createElement('div');
+	colDiv.className = 'col-md-12';
+	colDiv.appendChild(inputGroup);
 
-					// formにすべて追加
-					form.append(colDiv, submitDiv);
+	const submitDiv = document.createElement('div');
+	submitDiv.className = 'text-center';
+	submitDiv.appendChild(submitBtn);
+
+	// formにすべて追加
+	form.append(colDiv, submitDiv);
 
 	form.addEventListener('submit', e => {
 		e.preventDefault();
 		const commentText = form.comment.value.trim();
 		if (!commentText) return;
-		
+
 		console.log('送信データ:', {
+			postsId: postsId,
+			usersId: usersId,
+			comment: commentText
+		});
+
+		fetch('/api/comments', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
 				postsId: postsId,
 				usersId: usersId,
 				comment: commentText
-			});
-
-		fetch('/api/comments', {
-		  method: 'POST',
-		  headers: { 'Content-Type': 'application/json' },
-		  body: JSON.stringify({
-		    postsId: postsId,
-		    usersId: usersId, 
-		    comment: commentText
-		  })
+			})
 
 		})
 
 			.then(res => res.json()) // サーバからJSONを返す想定
 			.then(comment => {			//commentにはJSONオブジェクトが入る
+
+				console.log('Response JSON:', comment);
 				
 				const container = document.querySelector(`.comment-container[data-post-id="${postsId}"]`);
-				      const div = document.createElement('div');
-				      div.className = 'comment-item';
-					  const commentElement = createCommentElement(comment);
-					   container.appendChild(commentElement);
-				      container.appendChild(div);
+				const div = document.createElement('div');
+				div.className = 'comment-item';
+				const commentElement = createCommentElement(comment);
+				container.appendChild(commentElement);
+				container.appendChild(div);
 
-				      form.comment.value = '';
+				form.comment.value = '';
 			})
 			.catch(console.error);
 

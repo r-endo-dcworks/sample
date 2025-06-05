@@ -35,10 +35,6 @@
 										<h6 th:text="${posts.users.name}" class="ms-2 mb-0">ユーザー名</h6>
 
 										<div class="d-flex align-items-center justify-content-end pe-3 ms-auto gap-3">
-
-
-											
-
 											<div class="nav-item d-flex align-items-center pe-3 ms-auto">
 												<a href="#" class="like-button me-2" th:attr="data-post-id=${posts.id}">
 													<i class="bi"
@@ -66,9 +62,6 @@
 										</div>
 									</div>
 
-
-
-
 									<div th:each="postImages : ${posts.postImagesList}">
 										<img th:if="${postImages.imageUri != null}"
 											th:src="@{'/assets/img/' + ${postImages.imageUri}}" class="card-img-top"
@@ -78,31 +71,14 @@
 									<div class="card-body">
 										<h5 class="card-title" th:text="${posts.title}">タイトル</h5>
 										<span th:utext="${@stringUtil.nl2br(posts.body)}" class="mb-3 d-block">本文</span>
-										<div class="card-body">
-											<!--コメント送信欄-->
-											<form class="row g-3 needs-validation" novalidate
-												th:action="@{/profile/comment}" method="post">
-												<div class="col-md-12">
-													<div class="input-group has-validation">
-														<input type="hidden" name="postId" th:value="${posts.id}" />
-														<input name="comment" type="text" class="form-control"
-															placeholder="コメントを入力..." th:value="${comment}" required>
-														<div class="invalid-feedback">コメントを入力してください。</div>
-													</div>
-												</div>
-												<div class="text-center">
-													<button type="submit" class="btn btn-primary">コメントする</button>
-												</div>
-											</form>
-											<!--コメント送信欄終了-->
-										</div>
+										
+										<form class="post-comment-form" th:attr="data-post-id=${posts.id}"></form>
 
 										<!--コメント欄-->
 										<div class="card-body">
 											<div class="news">
 												<div class="post-item clearfix">
 													<div th:each="postComments : ${posts.postCommentsList}">
-
 														<div class="d-flex align-items-center mb-2">
 															<div th:if="${postComments.comment != null}">
 																<img th:src="@{'/assets/img/' + ${postComments.users.iconUri}}"
@@ -117,6 +93,7 @@
 															</div>
 														</div>
 													</div>
+													<div class="comment-container" th:attr="data-post-id=${posts.id}"></div>
 												</div>
 											</div>
 										</div>
@@ -343,10 +320,21 @@
 
 	<!-- ======= Footer ======= -->
 	<div th:replace="~{common/shoulder_fragment::footer}"></div>
+	<script type="module">
+			import {initCommentForPost} from '/assets/js/comment.js';
+			document.addEventListener('DOMContentLoaded', () => {
+				// すべての投稿にコメントフォームを追加
+				document.querySelectorAll('.post-comment-form').forEach(container => {
+					const postsId = container.dataset.postId;
+					if (postsId) {
+						initCommentForPost(postsId, container);
+					}
+				});
+			});
+		</script>
 	<script th:src="@{/assets/js/like.js}">
 		console.log("いいね機能のスクリプトは実行されています");
 	</script>
-
 </body>
 
 </html>

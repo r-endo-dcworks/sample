@@ -25,7 +25,6 @@ import com.example.eg_sns.dto.RequestModifyPassword;
 import com.example.eg_sns.entity.Friends;
 import com.example.eg_sns.entity.Posts;
 import com.example.eg_sns.entity.Users;
-import com.example.eg_sns.service.CommentsService;
 import com.example.eg_sns.service.FriendsService;
 import com.example.eg_sns.service.LikeService;
 import com.example.eg_sns.service.PostsService;
@@ -41,8 +40,6 @@ public class ProfileController {
 	private PostsService postsService;
 	@Autowired
 	private FriendsService friendsService;
-	@Autowired
-	private CommentsService commentsService;
 	@Autowired
 	private LikeService likeService;
 
@@ -158,19 +155,7 @@ public class ProfileController {
 		return "redirect:/profile/" + currentUser.getLoginId();
 	}
 
-	/**
-	 * コメント投稿処理
-	 * @return profile画面
-	 */
-	@PostMapping("/comment")
-	public String index(@RequestParam Long postId,
-			@RequestParam String comment,
-			HttpSession session) {
-		
-		Users user = (Users) session.getAttribute("users");
-		commentsService.saveComment(postId, user.getId(), comment);
-		return "redirect:/profile/" + user.getLoginId();
-	}
+	
 
 	/**
 	 * フレンド申請処理
